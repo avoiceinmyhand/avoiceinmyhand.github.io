@@ -1,0 +1,32 @@
+section, hgroup, header, nav, article, aside, footer, offline {
+display:block;
+}
+hgroup{
+font-family: 'Aldrich', sans-serif;
+//font-family: 'Offside', cursive;
+font-size: 150%;
+text-align:center;
+}
+header{
+text-align:center;
+}
+section{
+font-family: 'Offside', cursive;
+font-size: 110%;
+text-align:center;
+}
+aside{
+text-align:center;
+}
+a{
+    text-decoration: none;
+}
+footer{
+font-family: 'Aldrich', sans-serif;
+font-size: 80%;
+}
+offline{
+font-family: 'Aldrich', sans-serif;
+font-size: 100%;
+text-align:center;
+}

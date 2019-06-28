@@ -1,0 +1,20 @@
+CACHE MANIFEST
+# 2013-09-26:V2
+
+# Explicitly cached 'master entries'.
+CACHE:
+avoiceinmyhand.css
+avoiceinmyhand.js
+avoiceinmyhand_48x48.png
+avoiceinmyhand_144x144.png
+avoiceinmyhand_get_it_on_Google_Play.png
+avoiceinmyhand_landscape_screen_framed.png
+avoiceinmyhand_portrair_screen_framed.png
+avoiceinmyhand_portrait_settings_settings_framed.png
+index.html
+privacypolicy/privacypolicy.php
+PrivacyPolicy.pdf
+
+# offlinePage.html will be served in place of all other .html files
+FALLBACK:
+*.html /offlinePage.html
