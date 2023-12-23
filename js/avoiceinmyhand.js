@@ -12,6 +12,11 @@ document.addEventListener("DOMContentLoaded", function () {
     // Access Speech Synthesis - Holds text and voice
     let utterance;
 
+    clippy.load('Bonzi', function (agent) {
+        agent.show();
+        agent.speak('Welcome one, welcome all.');
+    });
+
     // Populate the <select> element with the voices
     speechSynthesis.addEventListener('voiceschanged', function () {
         // create utterance after voice has loaded
