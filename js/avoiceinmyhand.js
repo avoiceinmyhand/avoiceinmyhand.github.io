@@ -27,17 +27,27 @@ document.addEventListener("DOMContentLoaded", function () {
     // Add a click event listener to the button
     buttonElement.addEventListener('click', function () {
         // This function will be called when the button is clicked
+        // Disable multiple clicks
+        buttonElement.disabled = true;
         // Set text for the utterance
         utterance.text = textareaElement.value;
         // Set voice for the utterance (you can choose based on the selected option in your <select>)
         utterance.voice = speechSynthesis.getVoices().find(voice => voice.name === selectElement.value);
         // Only speak if there is text
         if (textareaElement.value !== "") {
-
+            // Speak the utterance
+            speechSynthesis.speak(utterance);
         } else {
             utterance.text = "Please enter text before clicking the button."
             // Speak the utterance
             speechSynthesis.speak(utterance);
         }
+        // Clean up
+        utterance.addEventListener('end', cleanUp)
     });
+
+    function cleanUp() {
+        buttonElement.disabled = false;
+    }
+
 });
