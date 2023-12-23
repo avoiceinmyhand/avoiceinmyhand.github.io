@@ -11,8 +11,12 @@ document.addEventListener("DOMContentLoaded", function () {
     const buttonElement = document.querySelector('button');
     // Access Speech Synthesis - Holds text and voice
     let utterance;
+    // Access buddy
+    let buddy;
 
-    clippy.load('Bonzi', function (agent) {
+    <!-- Init buddy Bonzi | Clippy | F1 | Genie | Genius | Links | Merlin | Peedy | Rocky | Rover -->
+    clippy.load('Peedy', function (agent) {
+        buddy = agent;
         agent.show();
         agent.speak('Welcome one, welcome all.');
     });
@@ -23,7 +27,7 @@ document.addEventListener("DOMContentLoaded", function () {
         utterance = new SpeechSynthesisUtterance();
         // Populate the select options here
         for (let voice of speechSynthesis.getVoices()) {
-            let selected = voice.name === "Google US English" ? "selected" : "";
+            let selected = voice.name === "Google UK English Male" ? "selected" : "";
             let option = `<option value="${voice.name}" ${selected}>${voice.name} (${voice.lang})</option>`;
             selectElement.insertAdjacentHTML("beforeend", option);
         }
@@ -40,10 +44,14 @@ document.addEventListener("DOMContentLoaded", function () {
         utterance.voice = speechSynthesis.getVoices().find(voice => voice.name === selectElement.value);
         // Only speak if there is text
         if (textareaElement.value !== "") {
+            // Buddy speak
+            buddy.speak(utterance.text)
             // Speak the utterance
             speechSynthesis.speak(utterance);
         } else {
             utterance.text = "Please enter text before clicking the button."
+            // Buddy speak
+            buddy.speak(utterance.text)
             // Speak the utterance
             speechSynthesis.speak(utterance);
         }
@@ -53,6 +61,8 @@ document.addEventListener("DOMContentLoaded", function () {
 
     function cleanUp() {
         buttonElement.disabled = false;
+        buddy.animate();
+        textareaElement.value = "";
     }
 
 });
