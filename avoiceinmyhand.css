@@ -1,4 +1,4 @@
-section, hgroup, header, nav, article, aside, footer, offline {
+section, hgroup, header, nav, article, aside, footer{
 display:block;
 }
 hgroup{
@@ -24,9 +24,4 @@ a{
 footer{
 font-family: 'Aldrich', sans-serif;
 font-size: 80%;
-}
-offline{
-font-family: 'Aldrich', sans-serif;
-font-size: 100%;
-text-align:center;
 }
