@@ -15,7 +15,7 @@ document.addEventListener("DOMContentLoaded", function () {
     // Access ordered element
     const orderedListElement = document.querySelector('ol');
     // Access text list
-    const textList = JSON.parse(localStorage.getItem('textList')) || [];
+    const textList = new Set(JSON.parse(localStorage.getItem('textList')) || []);
     // Load previous text list if applicable
     loadTextList(textList)
     // Access Speech Synthesis - Holds text and voice
@@ -29,10 +29,10 @@ document.addEventListener("DOMContentLoaded", function () {
         localStorage.setItem('saveClearListState', checkBoxElement.checked)
         // When unchecked clear the list and update UI
         if (!checkBoxElement.checked) {
-            // Clear array
-            textList.length = 0
-            // Store the array
-            localStorage.setItem('textList', JSON.stringify(textList));
+            // Clear list
+            textList.clear()
+            // Store the list
+            localStorage.setItem('textList', JSON.stringify(Array.from(textList)));
             // Populate UI
             loadTextList(textList);
         }
@@ -83,10 +83,10 @@ document.addEventListener("DOMContentLoaded", function () {
         if (textareaElement.value.trim()) {
             // User wants to store the text to the text list
             if (checkBoxElement.checked) {
-                // Add in Array
-                textList.push(textareaElement.value.trim())
-                // Store Array
-                localStorage.setItem('textList', JSON.stringify(textList));
+                // Add in list
+                textList.add(textareaElement.value.trim())
+                // Store list
+                localStorage.setItem('textList', JSON.stringify(Array.from(textList)));
                 // Populate or Update UI
                 loadTextList(textList);
             }
