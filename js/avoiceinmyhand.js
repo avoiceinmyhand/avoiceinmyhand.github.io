@@ -2,17 +2,58 @@
 document.addEventListener("DOMContentLoaded", function () {
     // Update to current year
     document.getElementsByTagName("currentyear")[0].innerHTML = new Date().getFullYear().toString();
-
     // Access the <select> element
     const selectElement = document.querySelector('select');
     // Access the <textarea> element
     const textareaElement = document.querySelector('textarea');
     // Access the <button> element
     const buttonElement = document.querySelector('button');
+    // Access the <input type="checkbox"> element
+    const checkBoxElement = document.querySelector('input[type="checkbox"]');
+    // Load previous state if applicable
+    checkBoxElement.checked = localStorage.getItem('saveClearListState') === 'true';
+    // Access ordered element
+    const orderedListElement = document.querySelector('ol');
+    // Access text list
+    const textList = JSON.parse(localStorage.getItem('textList')) || [];
+    // Load previous text list if applicable
+    loadTextList(textList)
     // Access Speech Synthesis - Holds text and voice
     let utterance;
     // Access buddy
     let buddy;
+
+    // Observe check box
+    checkBoxElement.addEventListener('click', function () {
+        // Save Clear List State
+        localStorage.setItem('saveClearListState', checkBoxElement.checked)
+        // When unchecked clear the list and update UI
+        if (!checkBoxElement.checked) {
+            // Clear array
+            textList.length = 0
+            // Store the array
+            localStorage.setItem('textList', JSON.stringify(textList));
+            // Populate UI
+            loadTextList(textList);
+        }
+    });
+
+    // Populate or Update UI List
+    function loadTextList(textList) {
+        // Clear
+        orderedListElement.innerHTML = "";
+        // Rebuild
+        textList.forEach((item) => {
+            const listItem = document.createElement('li');
+            listItem.textContent = item;
+            // Add a click event listener to all list items
+            listItem.addEventListener('click', function () {
+                speak(item)
+            });
+            listItem.style.cursor = 'pointer';
+            orderedListElement.appendChild(listItem);
+        });
+    }
 
     <!-- Init buddy Bonzi | Clippy | F1 | Genie | Genius | Links | Merlin | Peedy | Rocky | Rover -->
     clippy.load('Peedy', function (agent) {
@@ -38,31 +79,47 @@ document.addEventListener("DOMContentLoaded", function () {
         // This function will be called when the button is clicked
         // Disable multiple clicks
         buttonElement.disabled = true;
-        // Set text for the utterance
-        utterance.text = textareaElement.value;
-        // Set voice for the utterance (you can choose based on the selected option in your <select>)
-        utterance.voice = speechSynthesis.getVoices().find(voice => voice.name === selectElement.value);
         // Only speak if there is text
         if (textareaElement.value !== "") {
+            // User wants to store the text to the text list
+            if (checkBoxElement.checked) {
+                // Add in Array
+                textList.push(textareaElement.value.trim())
+                // Store Array
+                localStorage.setItem('textList', JSON.stringify(textList));
+                // Populate or Update UI
+                loadTextList(textList);
+            }
             // Buddy speak
-            buddy.speak(utterance.text)
-            // Speak the utterance
-            speechSynthesis.speak(utterance);
+            buddy.speak(textareaElement.value)
+            // Speak the text
+            speak(textareaElement.value)
         } else {
-            utterance.text = "Please enter text before clicking the button."
+            // Error
+            let text = "Please enter text before clicking the button."
             // Buddy speak
-            buddy.speak(utterance.text)
-            // Speak the utterance
-            speechSynthesis.speak(utterance);
+            buddy.speak(text)
+            // Speak the text
+            speak(text)
         }
-        // Clean up
-        utterance.addEventListener('end', cleanUp)
     });
 
+    // Handle all the speech
+    function speak(text) {
+        // Set text for the utterance
+        utterance.text = text;
+        // Set voice for the utterance (you can choose based on the selected option in your <select>)
+        utterance.voice = speechSynthesis.getVoices().find(voice => voice.name === selectElement.value);
+        // Speak the utterance
+        speechSynthesis.speak(utterance);
+        // Clean up after speech completion
+        utterance.addEventListener('end', cleanUp)
+    }
+
+    // Clean Up and animate after speech
     function cleanUp() {
         buttonElement.disabled = false;
         buddy.animate();
         textareaElement.value = "";
     }
-
 });
