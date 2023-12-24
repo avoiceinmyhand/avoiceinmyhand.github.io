@@ -56,10 +56,10 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     <!-- Init buddy Bonzi | Clippy | F1 | Genie | Genius | Links | Merlin | Peedy | Rocky | Rover -->
-    clippy.load('Peedy', function (agent) {
+    clippy.load('Bonzi', function (agent) {
         buddy = agent;
         agent.show();
-        agent.speak('Welcome one, welcome all.');
+        agent.speak('Welcome.');
     });
 
     // Populate the <select> element with the voices
@@ -68,10 +68,17 @@ document.addEventListener("DOMContentLoaded", function () {
         utterance = new SpeechSynthesisUtterance();
         // Populate the select options here
         for (let voice of speechSynthesis.getVoices()) {
-            let selected = voice.name === "Google UK English Male" ? "selected" : "";
+            let selected = voice.name === selectElement.value ? "selected" : "";
             let option = `<option value="${voice.name}" ${selected}>${voice.name} (${voice.lang})</option>`;
             selectElement.insertAdjacentHTML("beforeend", option);
         }
+        // Load the previous voice selection if applicable, or set a default value
+        selectElement.value = localStorage.getItem('selectedVoice') || 'Google UK English Male';
+    });
+
+    // Add an event listener to save the selected voice when it changes
+    selectElement.addEventListener('change', function () {
+        localStorage.setItem('selectedVoice', selectElement.value);
     });
 
     // Add a click event listener to the button
@@ -90,22 +97,20 @@ document.addEventListener("DOMContentLoaded", function () {
                 // Populate or Update UI
                 loadTextList(textList);
             }
-            // Buddy speak
-            buddy.speak(textareaElement.value.trim())
             // Speak the text
             speak(textareaElement.value.trim())
         } else {
-            // Error
-            let text = "Please enter text before clicking the button."
-            // Buddy speak
-            buddy.speak(text)
-            // Speak the text
-            speak(text)
+            // Speak the text Error
+            speak("Please enter text before clicking the button.")
         }
     });
 
     // Handle all the speech
     function speak(text) {
+        // Buddy clear queue, animation and balloon
+        buddy.stop()
+        // Buddy speak
+        buddy.speak(text)
         // Set text for the utterance
         utterance.text = text;
         // Set voice for the utterance (you can choose based on the selected option in your <select>)
