@@ -1,7 +1,7 @@
 // This ensures that the DOM is fully loaded before trying to access elements
 document.addEventListener("DOMContentLoaded", function () {
     // Update to current year
-    document.getElementsByTagName("currentyear")[0].innerHTML = new Date().getFullYear().toString();
+    document.querySelector("currentyear").innerHTML = new Date().getFullYear().toString();
     // Access the <select> element
     const selectElement = document.querySelector('select');
     // Access the <textarea> element
@@ -80,7 +80,7 @@ document.addEventListener("DOMContentLoaded", function () {
         // Disable multiple clicks
         buttonElement.disabled = true;
         // Only speak if there is text
-        if (textareaElement.value !== "") {
+        if (textareaElement.value.trim()) {
             // User wants to store the text to the text list
             if (checkBoxElement.checked) {
                 // Add in Array
@@ -91,9 +91,9 @@ document.addEventListener("DOMContentLoaded", function () {
                 loadTextList(textList);
             }
             // Buddy speak
-            buddy.speak(textareaElement.value)
+            buddy.speak(textareaElement.value.trim())
             // Speak the text
-            speak(textareaElement.value)
+            speak(textareaElement.value.trim())
         } else {
             // Error
             let text = "Please enter text before clicking the button."
