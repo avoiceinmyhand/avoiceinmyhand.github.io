@@ -1,27 +1,73 @@
-section, hgroup, header, nav, article, aside, footer{
-display:block;
+section, hgroup, header, nav, article, aside, footer {
+    display: block;
 }
-hgroup{
-font-family: 'Aldrich', sans-serif;
-//font-family: 'Offside', cursive;
-font-size: 150%;
-text-align:center;
+
+hgroup {
+    font-family: 'Aldrich', sans-serif;
+    font-size: 150%;
+    text-align: center;
 }
-header{
-text-align:center;
+
+header {
+    text-align: center;
 }
-section{
-font-family: 'Offside', cursive;
-font-size: 110%;
-text-align:center;
+
+section {
+    font-family: 'Offside', cursive;
+    font-size: 110%;
+    text-align: center;
 }
-aside{
-text-align:center;
+
+aside {
+    text-align: center;
 }
-a{
+
+a {
     text-decoration: none;
 }
-footer{
-font-family: 'Aldrich', sans-serif;
-font-size: 80%;
+
+footer {
+    font-family: 'Aldrich', sans-serif;
+    font-size: 80%;
+}
+
+textarea, select, button, ol {
+    outline: none;
+    padding: 8px 10px;
+    margin: 8px 10px;
+    border-radius: 5px;
+}
+
+textarea {
+    resize: none;
+    height: 110px;
+    font-size: 15px;
+    padding: 8px 10px;
+}
+
+select {
+    font-size: 14px;
+    background: none;
+}
+
+button {
+    height: 50px;
+    width: 200px;
+    color: #fff;
+    font-size: 17px;
+    background-color: #675afe;
+    cursor: pointer;
+    margin-top: 10px;
+    transition: 0.3s ease;
+}
+
+button:hover {
+    background-color: #4534fe;
+}
+
+@media (max-width: 400px) {
+    .wrapper {
+        max-width: 345px;
+        width: 100%;
+    }
 }
