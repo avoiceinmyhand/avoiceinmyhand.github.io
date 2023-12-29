@@ -42,7 +42,7 @@ footer {
     margin-top: auto;
 }
 
-textarea, select, button, ol {
+textarea, select, button {
     outline: none;
     padding: 8px 10px;
     margin: 8px 10px;
@@ -59,6 +59,18 @@ textarea {
 select {
     font-size: 14px;
     background: none;
+}
+
+ol {
+    list-style-type: decimal;
+    max-height: 200px;
+    overflow-y: scroll;
+}
+
+li {
+    border-bottom: 1px solid #ddd;
+    padding: 5px;
+    margin: 10px;
 }
 
 button {
