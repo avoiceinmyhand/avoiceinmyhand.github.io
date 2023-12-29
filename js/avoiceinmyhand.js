@@ -56,7 +56,7 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     <!-- Init buddy Bonzi | Clippy | F1 | Genie | Genius | Links | Merlin | Peedy | Rocky | Rover -->
-    clippy.load('Bonzi', function (agent) {
+    clippy.load('Peedy', function (agent) {
         buddy = agent;
         agent.show();
         agent.speak('Welcome.');
