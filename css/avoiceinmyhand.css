@@ -87,10 +87,3 @@ button {
 button:hover {
     background-color: #4534fe;
 }
-
-@media (max-width: 400px) {
-    .wrapper {
-        max-width: 345px;
-        width: 100%;
-    }
-}
