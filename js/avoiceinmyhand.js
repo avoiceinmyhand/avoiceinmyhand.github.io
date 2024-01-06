@@ -127,4 +127,41 @@ document.addEventListener("DOMContentLoaded", function () {
         buddy.animate();
         textareaElement.value = "";
     }
+
+    // Function to perform the drag
+    function performDrag() {
+        // Select the div with the class "clippy"
+        const clippyElement = document.querySelector('.clippy');
+
+        // Check if the element is found
+        if (clippyElement) {
+            // Create a new MouseEvent for a mousedown event
+            const mouseDownEvent = new MouseEvent('mousedown', {bubbles: true, cancelable: true});
+
+            // Dispatch the mousedown event on the clippy element
+            clippyElement.dispatchEvent(mouseDownEvent);
+
+            // Create a new MouseEvent for a mousemove event
+            const mouseMoveEvent = new MouseEvent('mousemove', {bubbles: true, cancelable: true});
+
+            // Set the clientX property to simulate a drag to the right
+            mouseMoveEvent.clientX += 5;
+
+            // Dispatch the mousemove event on the clippy element
+            clippyElement.dispatchEvent(mouseMoveEvent);
+
+            // Create a new MouseEvent for a mouseup event
+            const mouseUpEvent = new MouseEvent('mouseup', {bubbles: true, cancelable: true});
+
+            // Dispatch the mouseup event on the clippy element
+            clippyElement.dispatchEvent(mouseUpEvent);
+        } else {
+            console.error('Clippy element not found.');
+        }
+    }
+
+    // Wait for 3 seconds (adjust the delay as needed)
+    setTimeout(performDrag, 3000);
+
+
 });
