@@ -8,8 +8,10 @@ document.addEventListener("DOMContentLoaded", function () {
     const textareaElement = document.querySelector('textarea');
     // Access the <button> element
     const buttonElement = document.querySelector('button');
-    // Access the <input type="checkbox"> element
+    // Access the <input type="checkbox"> element with id save-clear
     const checkBoxSaveClear = document.getElementById('save-clear');
+    // Access the <input type="checkbox"> element with id ask
+    const checkBoxAsk = document.getElementById('ask');
     // Load previous state if applicable
     checkBoxSaveClear.checked = localStorage.getItem('saveClearListState') === 'true';
     // Access ordered element
@@ -36,6 +38,11 @@ document.addEventListener("DOMContentLoaded", function () {
             // Populate UI
             loadTextList(textList);
         }
+    });
+
+    checkBoxAsk.addEventListener('click', function () {
+        // Toggle Speak or Ask button text
+        buttonElement.textContent = checkBoxAsk.checked ? "Ask" : "Speak";
     });
 
     // Populate or Update UI List
@@ -86,6 +93,12 @@ document.addEventListener("DOMContentLoaded", function () {
         // This function will be called when the button is clicked
         // Disable multiple clicks
         buttonElement.disabled = true;
+        // Toggle handle speech or handle ask
+        buttonElement.textContent == "Speak" ? handleSpeech() : handleAsk();
+    });
+
+    // Handle speech when button text is Speak
+    function handleSpeech(){
         // Only speak if there is text
         if (textareaElement.value.trim()) {
             // User wants to store the text to the text list
@@ -103,7 +116,20 @@ document.addEventListener("DOMContentLoaded", function () {
             // Speak the text Error
             speak("Please enter text before clicking the button.")
         }
-    });
+    }
+
+    // Handle query when button text is Ask
+    function handleAsk() {
+                // Only query if there is text
+                if (textareaElement.value.trim()) {
+                    // TODO Query the text then speak the text
+                    // Speak the response
+                    speak(textareaElement.value.trim())
+                } else {
+                    // Speak the text Error
+                    speak("How can I assist you further.")
+                }
+    }
 
     // Handle all the speech
     function speak(text) {
