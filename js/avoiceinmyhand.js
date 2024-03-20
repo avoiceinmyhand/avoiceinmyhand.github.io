@@ -9,9 +9,9 @@ document.addEventListener("DOMContentLoaded", function () {
     // Access the <button> element
     const buttonElement = document.querySelector('button');
     // Access the <input type="checkbox"> element
-    const checkBoxElement = document.querySelector('input[type="checkbox"]');
+    const checkBoxSaveClear = document.getElementById('save-clear');
     // Load previous state if applicable
-    checkBoxElement.checked = localStorage.getItem('saveClearListState') === 'true';
+    checkBoxSaveClear.checked = localStorage.getItem('saveClearListState') === 'true';
     // Access ordered element
     const orderedListElement = document.querySelector('ol');
     // Access text list
@@ -24,11 +24,11 @@ document.addEventListener("DOMContentLoaded", function () {
     let buddy;
 
     // Observe check box
-    checkBoxElement.addEventListener('click', function () {
+    checkBoxSaveClear.addEventListener('click', function () {
         // Save Clear List State
-        localStorage.setItem('saveClearListState', checkBoxElement.checked)
+        localStorage.setItem('saveClearListState', checkBoxSaveClear.checked)
         // When unchecked clear the list and update UI
-        if (!checkBoxElement.checked) {
+        if (!checkBoxSaveClear.checked) {
             // Clear list
             textList.clear()
             // Store the list
@@ -89,7 +89,7 @@ document.addEventListener("DOMContentLoaded", function () {
         // Only speak if there is text
         if (textareaElement.value.trim()) {
             // User wants to store the text to the text list
-            if (checkBoxElement.checked) {
+            if (checkBoxSaveClear.checked) {
                 // Add in list
                 textList.add(textareaElement.value.trim())
                 // Store list
