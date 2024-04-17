@@ -1,5 +1,7 @@
 // This ensures that the DOM is fully loaded before trying to access elements
-document.addEventListener("DOMContentLoaded", function () {
+document.addEventListener("DOMContentLoaded", () => {
+    // Base URL
+    const baseURL = "http://localhost:8080/api";
     // Update to current year
     document.querySelector("currentyear").innerHTML = new Date().getFullYear().toString();
     // Access the <select> element
@@ -26,7 +28,7 @@ document.addEventListener("DOMContentLoaded", function () {
     let buddy;
 
     // Observe check box
-    checkBoxSaveClear.addEventListener('click', function () {
+    checkBoxSaveClear.addEventListener('click', () => {
         // Save Clear List State
         localStorage.setItem('saveClearListState', checkBoxSaveClear.checked)
         // When unchecked clear the list and update UI
@@ -40,7 +42,7 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     });
 
-    checkBoxAsk.addEventListener('click', function () {
+    checkBoxAsk.addEventListener('click', () => {
         // Toggle Speak or Ask button text
         buttonElement.textContent = checkBoxAsk.checked ? "Ask" : "Speak";
     });
@@ -62,7 +64,7 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     }
 
-    <!-- Init buddy Bonzi | Clippy | F1 | Genie | Genius | Links | Merlin | Peedy | Rocky | Rover -->
+    // Init buddy Bonzi | Clippy | F1 | Genie | Genius | Links | Merlin | Peedy | Rocky | Rover
     clippy.load('Peedy', function (agent) {
         buddy = agent;
         agent.show();
@@ -70,7 +72,7 @@ document.addEventListener("DOMContentLoaded", function () {
     });
 
     // Populate the <select> element with the voices
-    speechSynthesis.addEventListener('voiceschanged', function () {
+    speechSynthesis.addEventListener('voiceschanged', () => {
         // create utterance after voice has loaded
         utterance = new SpeechSynthesisUtterance();
         // Populate the select options here
@@ -84,12 +86,12 @@ document.addEventListener("DOMContentLoaded", function () {
     });
 
     // Add an event listener to save the selected voice when it changes
-    selectElement.addEventListener('change', function () {
+    selectElement.addEventListener('change', () => {
         localStorage.setItem('selectedVoice', selectElement.value);
     });
 
     // Add a click event listener to the button
-    buttonElement.addEventListener('click', function () {
+    buttonElement.addEventListener('click', () => {
         // This function will be called when the button is clicked
         // Disable multiple clicks
         buttonElement.disabled = true;
@@ -122,9 +124,10 @@ document.addEventListener("DOMContentLoaded", function () {
     function handleAsk() {
                 // Only query if there is text
                 if (textareaElement.value.trim()) {
-                    // TODO Query the text then speak the text
-                    // Speak the response
-                    speak(textareaElement.value.trim())
+                    // Notify user
+                    speak("I'm thinking...");
+                    // Query the text
+                   query(textareaElement.value.trim())
                 } else {
                     // Speak the text Error
                     speak("How can I assist you further.")
@@ -189,5 +192,46 @@ document.addEventListener("DOMContentLoaded", function () {
     // Wait for 3 seconds (adjust the delay as needed)
     setTimeout(performDrag, 3000);
 
+    function query(query){
+        const url = 'https://chatgpt-42.p.rapidapi.com/conversationgpt4';
+        const options = {
+            method: 'POST',
+            headers: {
+                'content-type': 'application/json',
+                'X-RapidAPI-Key': '4f156fc308msha2452bf45ce5caep1c3b7djsn88ba42617606',
+                'X-RapidAPI-Host': 'chatgpt-42.p.rapidapi.com'
+            },
+            body: JSON.stringify({
+                messages: [
+                    {
+                        role: 'user',
+                        content: query
+                    }
+                ],
+                system_prompt: '',
+                temperature: 0.9,
+                top_k: 5,
+                top_p: 0.9,
+                max_tokens: 256,
+                web_access: false
+            })
+        };
+        
+        async function fetchData() {
+            try {
+                const response = await fetch(url, options);
+                const result = await response.json();
+                const resultText = result.result;
+                speak("Done!");
+                alert(resultText);
+            } catch (error) {
+                console.error(error);
+                speak('I\'m sorry, I couldn\'t process your request. Please try again.');
+            }
+        }
+        
+        fetchData();
+        
+    }    
 
 });
