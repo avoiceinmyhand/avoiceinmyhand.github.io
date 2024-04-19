@@ -1,7 +1,5 @@
 // This ensures that the DOM is fully loaded before trying to access elements
 document.addEventListener("DOMContentLoaded", () => {
-    // Base URL
-    const baseURL = "http://localhost:8080/api";
     // Update to current year
     document.querySelector("currentyear").innerHTML = new Date().getFullYear().toString();
     // Access the <select> element
@@ -100,7 +98,7 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 
     // Handle speech when button text is Speak
-    function handleSpeech(){
+    function handleSpeech() {
         // Only speak if there is text
         if (textareaElement.value.trim()) {
             // User wants to store the text to the text list
@@ -122,16 +120,16 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // Handle query when button text is Ask
     function handleAsk() {
-                // Only query if there is text
-                if (textareaElement.value.trim()) {
-                    // Notify user
-                    speak("I'm thinking...");
-                    // Query the text
-                   query(textareaElement.value.trim())
-                } else {
-                    // Speak the text Error
-                    speak("How can I assist you further.")
-                }
+        // Only query if there is text
+        if (textareaElement.value.trim()) {
+            // Notify user
+            speak("I'm thinking...");
+            // Query the text
+            query(textareaElement.value.trim())
+        } else {
+            // Speak the text Error
+            speak("How can I assist you further.")
+        }
     }
 
     // Handle all the speech
@@ -165,13 +163,13 @@ document.addEventListener("DOMContentLoaded", () => {
         // Check if the element is found
         if (clippyElement) {
             // Create a new MouseEvent for a mousedown event
-            const mouseDownEvent = new MouseEvent('mousedown', {bubbles: true, cancelable: true});
+            const mouseDownEvent = new MouseEvent('mousedown', { bubbles: true, cancelable: true });
 
             // Dispatch the mousedown event on the clippy element
             clippyElement.dispatchEvent(mouseDownEvent);
 
             // Create a new MouseEvent for a mousemove event
-            const mouseMoveEvent = new MouseEvent('mousemove', {bubbles: true, cancelable: true});
+            const mouseMoveEvent = new MouseEvent('mousemove', { bubbles: true, cancelable: true });
 
             // Set the clientX property to simulate a drag to the right
             mouseMoveEvent.clientX += 5;
@@ -180,7 +178,7 @@ document.addEventListener("DOMContentLoaded", () => {
             clippyElement.dispatchEvent(mouseMoveEvent);
 
             // Create a new MouseEvent for a mouseup event
-            const mouseUpEvent = new MouseEvent('mouseup', {bubbles: true, cancelable: true});
+            const mouseUpEvent = new MouseEvent('mouseup', { bubbles: true, cancelable: true });
 
             // Dispatch the mouseup event on the clippy element
             clippyElement.dispatchEvent(mouseUpEvent);
@@ -192,7 +190,8 @@ document.addEventListener("DOMContentLoaded", () => {
     // Wait for 3 seconds (adjust the delay as needed)
     setTimeout(performDrag, 3000);
 
-    function query(query){
+    // Query and await response
+    function query(query) {
         const url = 'https://chatgpt-42.p.rapidapi.com/conversationgpt4';
         const options = {
             method: 'POST',
@@ -216,22 +215,96 @@ document.addEventListener("DOMContentLoaded", () => {
                 web_access: false
             })
         };
-        
+        // asynchronous function
         async function fetchData() {
             try {
                 const response = await fetch(url, options);
                 const result = await response.json();
                 const resultText = result.result;
                 speak("Done!");
-                alert(resultText);
+                // Update UI
+                customAlert.alert(resultText, "Done!");
             } catch (error) {
                 console.error(error);
                 speak('I\'m sorry, I couldn\'t process your request. Please try again.');
             }
         }
-        
+
         fetchData();
-        
-    }    
+    }
+
+    // CustomAlert class definition
+    function CustomAlert() {
+        this.alert = function (message, title) {
+            // Create elements for the dialog box
+            let dialogoverlay = document.createElement('div');
+            dialogoverlay.id = 'dialogoverlay';
+            dialogoverlay.style.position = 'fixed';
+            dialogoverlay.style.top = '0';
+            dialogoverlay.style.left = '0';
+            dialogoverlay.style.width = '100%';
+            dialogoverlay.style.height = '100%';
+            dialogoverlay.style.backgroundColor = 'rgba(0, 0, 0, 0.5)';
+            dialogoverlay.style.zIndex = '1000';
+
+            let dialogbox = document.createElement('div');
+            dialogbox.id = 'dialogbox';
+            dialogbox.style.position = 'fixed';
+            dialogbox.style.top = '50%';
+            dialogbox.style.left = '50%';
+            dialogbox.style.transform = 'translate(-50%, -50%)';
+            dialogbox.style.backgroundColor = '#fff';
+            dialogbox.style.padding = '20px';
+            dialogbox.style.borderRadius = '5px';
+            dialogbox.style.boxShadow = '0 0 10px rgba(0, 0, 0, 0.3)';
+            dialogbox.style.zIndex = '1001';
+
+            let dialogboxhead = document.createElement('div');
+            dialogboxhead.id = 'dialogboxhead';
+            dialogboxhead.textContent = title ? title : 'Alert';
+            dialogboxhead.style.fontSize = '18px';
+            dialogboxhead.style.fontWeight = 'bold';
+            dialogboxhead.style.marginBottom = '10px';
+
+            let dialogboxbody = document.createElement('div');
+            dialogboxbody.id = 'dialogboxbody';
+            dialogboxbody.textContent = message;
+            dialogboxbody.style.fontSize = '16px';
+
+            let dialogboxfoot = document.createElement('div');
+            dialogboxfoot.id = 'dialogboxfoot';
+            dialogboxfoot.style.textAlign = 'center';
+
+            let okButton = document.createElement('button');
+            okButton.textContent = 'OK';
+            okButton.style.padding = '10px 20px';
+            okButton.style.fontSize = '16px';
+            okButton.style.border = 'none';
+            okButton.style.backgroundColor = '#007bff';
+            okButton.style.color = '#fff';
+            okButton.style.cursor = 'pointer';
+            okButton.style.borderRadius = '5px';
+            okButton.addEventListener('click', this.ok);
+
+            dialogboxfoot.appendChild(okButton);
+
+            dialogbox.appendChild(dialogboxhead);
+            dialogbox.appendChild(dialogboxbody);
+            dialogbox.appendChild(dialogboxfoot);
+
+            // Append dialog box and overlay to body
+            document.body.appendChild(dialogoverlay);
+            document.body.appendChild(dialogbox);
+        }
+
+        this.ok = function () {
+            // Hide dialog box and overlay
+            document.getElementById('dialogbox').remove();
+            document.getElementById('dialogoverlay').remove();
+        }
+    }
+
+    // Create CustomAlert instance
+    const customAlert = new CustomAlert();
 
 });
