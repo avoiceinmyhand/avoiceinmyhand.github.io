@@ -31,12 +31,14 @@
     <hr>
     <section>
         <form action="https://docs.google.com/forms/d/e/1FAIpQLSfsUUWibM9hyqdATsuc1n699XPR-1VdT_-Ua8HXO6uLBmNjLw/formResponse"
-              method="POST">
+              id="contactForm"
+              method="POST" onsubmit="handleSubmit()" target="hidden_iframe">
             <input name="entry.310807117" placeholder="Full Name:" required type="text"><br>
             <input name="entry.1841595712" placeholder="Email:" required type="email"><br>
             <textarea name="entry.2091002453" placeholder="Message:" required></textarea><br>
-            <button type="submit">Contact</button>
+            <button id="contactButton" type="submit">Contact</button>
         </form>
+        <iframe id="hidden_iframe" name="hidden_iframe" style="display:none;"></iframe>
     </section>
 
 </article>
@@ -51,5 +53,13 @@
     |
     <a href="contact" target="_blank">Contact</a>
 </footer>
+<script>
+    function handleSubmit() {
+        const button = document.getElementById('contactButton');
+        button.disabled = true;
+        button.innerText = 'Submitted';
+        //document.getElementById('contactForm').reset();
+    }
+</script>
 </body>
 </html>
