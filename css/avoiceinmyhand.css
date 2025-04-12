@@ -87,3 +87,14 @@ button {
 button:hover {
     background-color: #4534fe;
 }
+
+form {
+    margin-top: 100px;
+    text-align: center;
+}
+
+.inputForm {
+    margin: 5px;
+    height: 30px;
+    width: 200px;
+}
