@@ -57,8 +57,10 @@
     function handleSubmit() {
         const button = document.getElementById('contactButton');
         button.disabled = true;
-        button.innerText = 'Submitted';
-        //document.getElementById('contactForm').reset();
+        button.innerText = 'Thank You!';
+        setTimeout(function () {
+            document.getElementById('contactForm').reset();
+        }, 500);
     }
 </script>
 </body>
