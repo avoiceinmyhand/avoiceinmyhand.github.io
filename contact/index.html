@@ -30,6 +30,7 @@
 <article>
     <hr>
     <section>
+        Message us:<br><br>
         <form action="https://docs.google.com/forms/d/e/1FAIpQLSfsUUWibM9hyqdATsuc1n699XPR-1VdT_-Ua8HXO6uLBmNjLw/formResponse"
               id="contactForm"
               method="POST" onsubmit="handleSubmit()" target="hidden_iframe">
@@ -39,6 +40,15 @@
             <button id="contactButton" type="submit">Contact</button>
         </form>
         <iframe id="hidden_iframe" name="hidden_iframe" style="display:none;"></iframe>
+        <br>
+        Email us:<br><br>
+        <script>
+            const user = "help";
+            const domain = "avoiceinmyhand.com";
+            const email = user + "@" + domain;
+            document.write('<a href="mailto:' + email + '">' + email + '</a>');
+        </script>
+        <noscript>Please enable JavaScript to contact us.</noscript>
     </section>
 
 </article>
