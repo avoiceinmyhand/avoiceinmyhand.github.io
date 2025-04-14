@@ -31,15 +31,13 @@
     <hr>
     <section>
         Message us:<br><br>
-        <form action="https://docs.google.com/forms/d/e/1FAIpQLSfsUUWibM9hyqdATsuc1n699XPR-1VdT_-Ua8HXO6uLBmNjLw/formResponse"
-              id="contactForm"
-              method="POST" onsubmit="handleSubmit()" target="hidden_iframe">
+        <form id="contactForm">
             <input class="inputForm" name="entry.310807117" placeholder="Full Name:" required type="text"><br>
             <input class="inputForm" name="entry.1841595712" placeholder="Email:" required type="email"><br>
             <textarea name="entry.2091002453" placeholder="Message:" required></textarea><br>
+            <input autocomplete="off" name="website" style="display:none;" tabindex="-1" type="text">
             <button id="contactButton" type="submit">Contact</button>
         </form>
-        <iframe id="hidden_iframe" name="hidden_iframe" style="display:none;"></iframe>
         <br>
         Email us:<br><br>
         <script>
@@ -50,28 +48,39 @@
         </script>
         <noscript>Please enable JavaScript to contact us.</noscript>
     </section>
-
 </article>
 
 <footer>
     <hr>
     &copy; 2013 -
     <currentyear>2025</currentyear>
-    <a href="https://www.avoiceinmyhand.com">www.avoiceinmyhand.com</a>
-    |
-    <a href="../privacypolicy">Privacy Policy</a>
-    |
+    <a href="https://www.avoiceinmyhand.com">www.avoiceinmyhand.com</a> |
+    <a href="../privacypolicy">Privacy Policy</a> |
     <a href="../contact">Contact</a>
 </footer>
 <script>
-    function handleSubmit() {
-        const button = document.getElementById('contactButton');
-        button.disabled = true;
-        button.innerText = 'Thank You!';
-        setTimeout(function () {
-            document.getElementById('contactForm').reset();
-        }, 500);
-    }
+    const form = document.getElementById('contactForm');
+    const button = document.getElementById('contactButton');
+    const googleFormUrl = 'https://docs.google.com/forms/d/e/1FAIpQLSfsUUWibM9hyqdATsuc1n699XPR-1VdT_-Ua8HXO6uLBmNjLw/formResponse';
+    form.addEventListener('submit', function (e) {
+        e.preventDefault();
+        if (form.website && form.website.value !== '') {
+            console.warn('Non human submission.');
+            return;
+        }
+        const formData = new FormData(form);
+        fetch(googleFormUrl, {
+            method: 'POST',
+            mode: 'no-cors',
+            body: formData
+        }).then(() => {
+            button.disabled = true;
+            button.innerText = 'Thank You!';
+            form.reset();
+        }).catch(() => {
+            alert("Submission failed. Please try again.");
+        });
+    });
 </script>
 </body>
 </html>
