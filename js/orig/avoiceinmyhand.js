@@ -71,19 +71,70 @@ document.addEventListener("DOMContentLoaded", () => {
         agent.speak('Welcome.');
     });
 
-    // Populate the <select> element with the voices
-    speechSynthesis.addEventListener('voiceschanged', () => {
-        // create utterance after voice has loaded
-        utterance = new SpeechSynthesisUtterance();
-        // Populate the select options here
-        for (let voice of speechSynthesis.getVoices()) {
-            let selected = voice.name === selectElement.value ? "selected" : "";
-            let option = `<option value="${voice.name}" ${selected}>${voice.name} (${voice.lang})</option>`;
-            selectElement.insertAdjacentHTML("beforeend", option);
+    // Load voices safely on both desktop and mobile
+    async function initVoices() {
+        function loadVoices() {
+            return new Promise((resolve) => {
+                let voices = speechSynthesis.getVoices();
+                if (voices.length) {
+                    resolve(voices);
+                    return;
+                }
+                speechSynthesis.addEventListener('voiceschanged', () => {
+                    resolve(speechSynthesis.getVoices());
+                }, {once: true});
+            });
         }
-        // Load the previous voice selection if applicable, or set a default value
-        selectElement.value = localStorage.getItem('selectedVoice') || 'Google UK English Male';
-    });
+
+        const voices = await loadVoices();
+
+        if (!voices.length) {
+            customAlert.alert(
+                "No speech voices are available on this device. " +
+                "This may happen on Chrome mobile. Please try updating your browser " +
+                "or use desktop Chrome.",
+                "Speech Engine Missing"
+            );
+            return;
+        }
+
+        utterance = new SpeechSynthesisUtterance();
+
+        // Clear any existing options
+        selectElement.innerHTML = "";
+
+        voices.forEach((voice) => {
+            let option = document.createElement("option");
+            option.value = voice.name;
+            option.textContent = `${voice.name} (${voice.lang})`;
+            selectElement.appendChild(option);
+        });
+
+        // Restore saved or default
+        selectElement.value = localStorage.getItem('selectedVoice') || voices[0].name;
+
+        if (/Android/i.test(navigator.userAgent)) {
+            // Hide voice selection completely on mobile
+            selectElement.style.display = "none";
+            // Android notice
+            customAlert.alert(
+                "On Android, voice selection is limited because mobile browsers use the device's built-in speech engine. " +
+                "Different voices may sound the same. For more variety, please use desktop Chrome.",
+                "Android Voice Info"
+            );
+        } else if (/iPhone|iPad|iPod/i.test(navigator.userAgent)) {
+            // iOS notice
+            customAlert.alert(
+                "On iOS, voice selection is limited to the system’s built-in voices. " +
+                "Additional voices may need to be installed in Settings → Accessibility → Spoken Content → Voices. " +
+                "For more variety, please use desktop Chrome.",
+                "iOS Voice Info"
+            );
+        }
+    }
+
+    // Call after DOM is ready
+    initVoices();
 
     // Add an event listener to save the selected voice when it changes
     selectElement.addEventListener('change', () => {
@@ -134,21 +185,28 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     }
 
-    // Handle all the speech
     function speak(text) {
-        // Buddy clear queue, animation and balloon
-        buddy.stop()
-        // Buddy speak
-        buddy.speak(text)
-        // Set text for the utterance
+        if (!utterance || !speechSynthesis.getVoices().length) {
+            customAlert.alert(
+                "Speech synthesis is not available on this device/browser.",
+                "Error"
+            );
+            buttonElement.disabled = false;
+            return;
+        }
+
+        buddy.stop();
+        buddy.speak(text);
+
         utterance.text = text;
-        // Set voice for the utterance (you can choose based on the selected option in your <select>)
-        utterance.voice = speechSynthesis.getVoices().find(voice => voice.name === selectElement.value);
-        // Speak the utterance
+        utterance.voice = speechSynthesis.getVoices().find(v => v.name === selectElement.value);
+
+        speechSynthesis.cancel(); // stop anything already queued
         speechSynthesis.speak(utterance);
-        // Clean up after speech completion
-        utterance.addEventListener('end', cleanUp)
+
+        utterance.addEventListener('end', cleanUp, {once: true});
     }
+
 
     // Clean Up and animate after speech
     function cleanUp() {
