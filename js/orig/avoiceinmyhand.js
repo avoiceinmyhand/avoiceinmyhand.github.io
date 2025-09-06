@@ -100,6 +100,9 @@ document.addEventListener("DOMContentLoaded", () => {
 
         utterance = new SpeechSynthesisUtterance();
 
+        // Always start with English as the safe default
+        utterance.lang = "en-US";
+
         // Clear any existing options
         selectElement.innerHTML = "";
 
@@ -111,7 +114,12 @@ document.addEventListener("DOMContentLoaded", () => {
         });
 
         // Restore saved or default
-        selectElement.value = localStorage.getItem('selectedVoice') || voices[0].name;
+        const savedVoice = localStorage.getItem('selectedVoice');
+        const defaultVoice = voices.find(v => v.name === savedVoice) || voices[0];
+
+        utterance.voice = defaultVoice;
+        utterance.lang = defaultVoice?.lang || "en-US"; // sync language with voice
+        selectElement.value = defaultVoice.name;
 
         if (/Android/i.test(navigator.userAgent)) {
             // Hide voice selection completely on mobile
@@ -138,7 +146,14 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // Add an event listener to save the selected voice when it changes
     selectElement.addEventListener('change', () => {
-        localStorage.setItem('selectedVoice', selectElement.value);
+        const selectedName = selectElement.value;
+        const selectedVoice = speechSynthesis.getVoices().find(v => v.name === selectedName);
+
+        if (selectedVoice) {
+            utterance.voice = selectedVoice;
+            utterance.lang = selectedVoice.lang || "en-US"; // sync language with voice
+            localStorage.setItem('selectedVoice', selectedName);
+        }
     });
 
     // Add a click event listener to the button
@@ -206,7 +221,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
         utterance.addEventListener('end', cleanUp, {once: true});
     }
-
 
     // Clean Up and animate after speech
     function cleanUp() {
