@@ -74,25 +74,33 @@ document.addEventListener("DOMContentLoaded", () => {
     // Load voices safely on both desktop and mobile
     async function initVoices() {
         function loadVoices() {
-            return new Promise((resolve) => {
-                let voices = speechSynthesis.getVoices();
-                if (voices.length) {
-                    resolve(voices);
-                    return;
+            return new Promise((resolve, reject) => {
+                let attempts = 0;
+
+                function tryGetVoices() {
+                    let voices = speechSynthesis.getVoices();
+                    if (voices.length > 0) {
+                        resolve(voices);
+                    } else if (attempts < 10) { // try up to 10 times
+                        attempts++;
+                        setTimeout(tryGetVoices, 300); // wait 300ms and try again
+                    } else {
+                        reject("No voices available after waiting.");
+                    }
                 }
-                speechSynthesis.addEventListener('voiceschanged', () => {
-                    resolve(speechSynthesis.getVoices());
-                }, {once: true});
+
+                tryGetVoices();
             });
         }
 
-        const voices = await loadVoices();
-
-        if (!voices.length) {
+        let voices;
+        try {
+            voices = await loadVoices();
+        } catch (e) {
             customAlert.alert(
-                "No speech voices are available on this device. " +
-                "This may happen on Chrome mobile. Please try updating your browser " +
-                "or use desktop Chrome.",
+                "No speech voices are available on this device after waiting. " +
+                "This may happen on mobile. Please try updating your browser " +
+                "or use desktop.",
                 "Speech Engine Missing"
             );
             return;
